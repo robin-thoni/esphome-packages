@@ -1,0 +1,91 @@
+# Board
+esp32:
+  board: esp32s3box
+  flash_size: 16MB
+
+psram:
+  mode: octal
+  speed: 80MHz
+
+# Generic protocols
+spi:
+  - id: spi_bus
+    clk_pin: 7
+    mosi_pin: 6
+
+i2c:
+  scl: GPIO18
+  sda: GPIO8
+
+# Generic IO
+binary_sensor:
+  - platform: gpio
+    id: left_top_button
+    pin:
+      number: GPIO0
+      mode: INPUT_PULLUP
+      inverted: true
+  - platform: gpio
+    id: mute_status
+    pin:
+      number: GPIO1
+      mode: INPUT_PULLUP
+      inverted: true
+  - platform: gt911
+    id: touch_red_circle
+    index: 0
+
+output:
+  - platform: ledc
+    pin: GPIO47
+    id: backlight_output
+
+switch:
+  - platform: gpio
+    id: speaker_enable # TODO what is it?
+    pin: GPIO46
+
+# Audio
+i2s_audio:
+  - id: i2s_audio_bus
+    i2s_lrclk_pin: GPIO45
+    i2s_bclk_pin: GPIO17
+    i2s_mclk_pin: GPIO2
+
+audio_adc:
+  - platform: es7210
+    id: es7210_adc
+    bits_per_sample: 16bit
+    sample_rate: 16000
+
+audio_dac:
+  - platform: es8311
+    id: es8311_dac
+    bits_per_sample: 16bit
+    sample_rate: 48000
+
+microphone:
+  - platform: i2s_audio
+    id: box_mic
+    sample_rate: 16000
+    i2s_din_pin: GPIO16
+    bits_per_sample: 16bit
+    adc_type: external
+
+# Display
+display:
+  - platform: ili9xxx
+    id: s3_box_lcd
+    model: S3BOX
+    invert_colors: false
+    data_rate: 40MHz
+    cs_pin: 5
+    dc_pin: 4
+    reset_pin:
+      number: 48
+      inverted: true
+
+touchscreen:
+  platform: gt911
+  id: s3_box_touchscreen
+  interrupt_pin: GPIO3
