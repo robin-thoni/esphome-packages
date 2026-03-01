@@ -1,0 +1,74 @@
+esp32:
+  board: pico32
+
+spi:
+  clk_pin: GPIO18
+  mosi_pin: GPIO23
+
+i2c:
+  sda: GPIO21
+  scl: GPIO22
+
+# Missing support for PCF8536
+# time:
+
+switch:
+  - platform: gpio
+    pin: GPIO13
+    id: vib_motor
+
+binary_sensor:
+  - platform: gpio
+    id: btn_top_left
+    pin:
+      number: GPIO25
+      allow_other_uses: true
+  - platform: gpio
+    id: btn_top_right
+    pin:
+      number: GPIO35
+      allow_other_uses: true
+  - platform: gpio
+    id: btn_bottom_right
+    pin:
+      number: GPIO04
+      allow_other_uses: true
+  - platform: gpio
+    id: btn_bottom_left
+    pin:
+      number: GPIO26
+      allow_other_uses: true
+
+deep_sleep:
+  id: deep_sleep_id
+  esp32_ext1_wakeup:
+    pins:
+      - number: GPIO25
+        allow_other_uses: true
+      - number: GPIO35
+        allow_other_uses: true
+      - number: GPIO04
+        allow_other_uses: true
+      - number: GPIO26
+        allow_other_uses: true
+      # - number: GPIO27 # RTC interrupt
+      #   allow_other_uses: true
+    mode: ANY_HIGH
+
+sensor:
+  - platform: adc
+    id: battery_voltage
+    pin: GPIO34
+    attenuation: auto
+    device_class: VOLTAGE
+    filters:
+      - multiply: 2.0 # From Watchy.cpp:687 Battery voltage goes through a 1/2 divider.
+
+display:
+  - platform: waveshare_epaper
+    id: display_id
+    cs_pin: GPIO5
+    reset_pin: GPIO9
+    dc_pin: GPIO10
+    busy_pin: GPIO19
+    model: 1.54inv2

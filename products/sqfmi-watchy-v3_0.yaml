@@ -1,0 +1,69 @@
+esp32:
+  board: esp32-s3-devkitc-1
+
+spi:
+  clk_pin: GPIO47
+  mosi_pin: GPIO48
+  miso_pin: GPIO46
+
+i2c:
+  sda: GPIO12
+  scl: GPIO11
+
+switch:
+  - platform: gpio
+    pin: GPIO17
+    name: Vib Motor
+    id: vib_motor
+
+binary_sensor:
+  - platform: gpio
+    id: btn_top_left
+    pin:
+      number: GPIO6
+      inverted: True
+      allow_other_uses: true
+  - platform: gpio
+    id: btn_top_right
+    pin:
+      number: GPIO0
+      inverted: True
+      # allow_other_uses: true
+  - platform: gpio
+    id: btn_bottom_right
+    pin:
+      number: GPIO8
+      inverted: True
+      # allow_other_uses: true
+  - platform: gpio
+    id: btn_bottom_left
+    pin:
+      number: GPIO7
+      inverted: True
+      # allow_other_uses: true
+  - platform: gpio
+    id: chrg_status
+    pin:
+      number: GPIO10
+      # allow_other_uses: true
+  - platform: gpio
+    id: usb_det
+    pin:
+      number: GPIO21
+      # allow_other_uses: true
+
+sensor:
+  - platform: adc
+    id: battery_voltage
+    pin: GPIO9
+    attenuation: auto
+    device_class: VOLTAGE
+
+display:
+  - platform: waveshare_epaper
+    id: display_id
+    cs_pin: GPIO33
+    reset_pin: GPIO35
+    dc_pin: GPIO34
+    busy_pin: GPIO36
+    model: 1.54inv2
