@@ -1,0 +1,35 @@
+esp32:
+  board: esp32-s3-devkitc-1
+  framework:
+    type: esp-idf
+    sdkconfig_options:
+      # To gain more speed, or if big transferts fails
+      # not done by default because it conflicts with the uart component (crash)
+      CONFIG_UART_ISR_IN_IRAM: y
+      # Some command may block for a long delay if the modem is not reachable, and cause a watchdog timeout
+      CONFIG_ESP_TASK_WDT_TIMEOUT_S: "60"
+      # With CMUX, do not reconstruct the entire payload in the DTE buffer.
+      # Try it if you get "CMUX: Failed to defragment longer payload" warnings message
+      # You can also this a bigger "buffer_size_dte"
+      CONFIG_ESP_MODEM_CMUX_DEFRAGMENT_PAYLOAD: n
+      CONFIG_ESP_MODEM_USE_INFLATABLE_BUFFER_IF_NEEDED: y
+      CONFIG_ESP_MODEM_CMUX_USE_SHORT_PAYLOADS_ONLY: n
+
+modem:
+  id: atmodem
+  rx_pin: GPIO47
+  tx_pin: GPIO48
+  model: SIM7670
+  enable_cmux: true
+  power_pin:
+    pin:
+      number: GPIO04
+      inverted: True
+    ton_pulse_delay: 3s
+    ton_delay: 1.4s
+    toff_delay: 2.5s
+
+switch:
+  - platform: gpio
+    id: gsm_reset
+    pin: GPIO5
