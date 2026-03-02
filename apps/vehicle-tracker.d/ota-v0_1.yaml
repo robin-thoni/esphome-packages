@@ -1,0 +1,29 @@
+substitutions:
+  ota_url: null
+  ota_md5_url: null
+  ota_username: null
+  ota_password: null
+
+http_request:
+  verify_ssl: True
+
+ota:
+  - platform: http_request
+
+button:
+  - platform: template
+    id: btn_do_ota
+    name: Firmware OTA
+    icon: mdi:download
+    on_press: 
+      then:
+        - script.execute: do_ota
+
+script:
+  - id: do_ota
+    then:
+      - ota.http_request.flash:
+          url: ${ota_url}
+          md5_url: ${ota_md5_url}
+          username: ${ota_username}
+          password: ${ota_password}

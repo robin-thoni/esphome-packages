@@ -1,0 +1,82 @@
+canbus:
+  - id: !extend can0
+    on_frame:
+      - can_id: 0
+        can_id_mask: 0
+        use_extended_id: false
+        then:
+          - lambda: |
+              if (can_id < 0x7E8 || can_id > 0x7EF) {
+                return;
+              }
+              if (x.size() < 4) {
+                return;
+              }
+              if (x[1] != 0x41) {
+                return;
+              }
+              if (x[2] == 0x0C) { // RPM
+                uint16_t raw = (x[3] << 8) | x[4];
+                float rpm = raw / 4.0f;
+                id(vehicle_rpm).publish_state(rpm);
+              }
+              else if (x[2] == 0x0D) { // Speed
+                float speed = x[3];
+                id(vehicle_speed).publish_state(speed);
+              }
+          # - lambda: |
+          #     if (can_id != 0x7D1) {
+          #       return;
+          #     }
+          #     uint32_t odometer = (x[0] << 16) | (x[1] << 8) | x[2];
+          #     id(vehicle_odometer).publish_state(odometer);
+
+sensor:
+  - platform: template
+    id: vehicle_rpm
+    name: "RPM"
+    icon: mdi:fan
+    unit_of_measurement: "rpm"
+    accuracy_decimals: 0
+    update_interval: never
+    filters:
+      - timeout:
+          timeout: 1min
+          value: NaN
+      - lambda: |
+          return (int)(x / 100) * 100;
+      - delta: 100
+  - platform: template
+    id: vehicle_speed
+    name: "Speed"
+    icon: mdi:speedometer
+    unit_of_measurement: "km/h"
+    accuracy_decimals: 0
+    update_interval: never
+    filters:
+      - timeout:
+          timeout: 1min
+          value: NaN
+      # - lambda: |
+      #     if (x <= 5.0f) {
+      #       return 0.0f;
+      #     } else {
+      #       return x;
+      #     }
+      - delta: 5
+  # - platform: template
+  #   id: vehicle_odometer
+  #   name: "Odometer"
+  #   unit_of_measurement: "km"
+  #   accuracy_decimals: 0
+  #   update_interval: never
+  #   filters:
+  #     - timeout:
+  #         timeout: 1min
+  #         value: NaN
+
+interval:
+  - interval: 1s
+    then:
+      - canbus.send: [0x02, 0x01, 0x0C, 0x00, 0x00, 0x00, 0x00, 0x00] # RPM
+      - canbus.send: [0x02, 0x01, 0x0D, 0x00, 0x00, 0x00, 0x00, 0x00] # Speed

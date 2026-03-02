@@ -1,0 +1,8 @@
+packages:
+  - !include makerfabs-esp32-s3-4g-lte-cat1-v1_0.yaml
+
+canbus:
+  - platform: esp32_can
+    id: can0
+    rx_pin: GPIO39
+    tx_pin: GPIO38

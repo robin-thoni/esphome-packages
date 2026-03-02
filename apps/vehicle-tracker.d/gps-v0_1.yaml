@@ -1,0 +1,80 @@
+modem:
+  nmea:
+    id: gps_uart
+    update_interval: 15s
+
+gps:
+  uart_id: gps_uart
+  latitude:
+    id: gps_latitude
+    accuracy_decimals: 8
+    filters:
+      - timeout:
+          timeout: 1min
+          value: NaN
+      - delta: 0.0003
+  longitude:
+    id: gps_longitude
+    accuracy_decimals: 8
+    filters:
+      - timeout:
+          timeout: 1min
+          value: NaN
+      - delta: 0.0003
+  speed:
+    id: gps_speed
+    accuracy_decimals: 0
+    filters:
+      - timeout:
+          timeout: 1min
+          value: NaN
+      - lambda: |
+          if (x <= 5.0f) {
+            return 0.0f;
+          } else {
+            return x;
+          }
+      - delta: 1
+  course:
+    id: gps_course
+    accuracy_decimals: 0
+    filters:
+      - timeout:
+          timeout: 1min
+          value: NaN
+      - delta: 10
+  altitude:
+    id: gps_altitude
+    accuracy_decimals: 0
+    filters:
+      - timeout:
+          timeout: 1min
+          value: NaN
+      - delta: 3
+    on_value: 
+      then:
+        - component.update: gnss_data
+  update_interval: 15s
+
+text_sensor:
+  - platform: template
+    id: gnss_data
+    name: Location Data
+    icon: mdi:map
+    entity_category: "diagnostic"
+    update_interval: never
+    lambda: |
+      if (isnan(id(gps_latitude).state) || isnan(id(gps_longitude).state)) {
+        return std::string();
+      }
+      const auto& lat_lon = std::to_string(id(gps_latitude).state) + ";" + std::to_string(id(gps_longitude).state) + ";";
+      if (id(gnss_data).state.rfind(lat_lon, 0) == 0) {
+        return {};
+      }
+      return lat_lon + std::to_string((int)id(gps_altitude).state) + ";" + std::to_string((int)id(gps_speed).state) + ";" + std::to_string((int)id(gps_course).state) + ";";
+
+switch:
+  - platform: modem
+    gnss:
+      id: gnss_on_off
+      restore_mode: ALWAYS_ON

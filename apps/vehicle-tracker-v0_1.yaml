@@ -1,0 +1,86 @@
+substitutions:
+  device_name: null
+  mqtt_broker_url: null
+  mqtt_broker_port: 1883
+  mqtt_broker_username: null
+  mqtt_broker_password: null
+  modem_apn: internet
+  can_bitrate: 500KBPS
+  can_extended_id: False
+  ota_url: null
+  ota_md5_url: null
+  ota_username: null
+  ota_password: null
+
+packages:
+  - !include ../products/robin-thoni_vehicle-tracker-v0_1.yaml
+  - !include vehicle-tracker.d/gps-v0_1.yaml
+  - !include
+      file: vehicle-tracker.d/ota-v0_1.yaml
+      vars:
+        ota_url: ${ota_url}
+        ota_md5_url: ${ota_md5_url}
+        ota_username: ${ota_username}
+        ota_password: ${ota_password}
+  - !include vehicle-tracker.d/obd2-sensors-v0_1.yaml
+  - !include vehicle-tracker.d/misc-v0_1.yaml
+
+external_components:
+  # - source: github://pr#6721
+  #   components: [ network, modem ]  # also add 'watchdog' if not found
+  #   refresh: 10min
+  - source:
+      type: local
+      path: my_components/esphome-modem/esphome/components
+    components: [ network, modem ]
+
+esphome:
+  name: ${device_name}
+  friendly_name: ${device_name}
+  project:
+    name: robin_thoni.vehicle_tracker
+    version: "0.1.0-dev"
+
+logger:
+
+modem:
+  apn: ${modem_apn}
+  # pin_code: "0000"
+  reboot_timeout: 0s
+
+mqtt:
+  broker: ${mqtt_broker_url}
+  port: ${mqtt_broker_port}
+  username: ${mqtt_broker_username}
+  password: ${mqtt_broker_password}
+
+  reboot_timeout: 0s
+  log_topic: null
+  idf_send_async: true
+  # Prevent entities from going `Unavailable` when the device is offline.
+  # Instead, use a custom binary_sensor
+  # TODO: check if it works long time and survives across HA restart
+  will_message:
+    topic: ${device_name}/binary_sensor/online/state
+    payload: "OFF"
+
+canbus:
+  - id: !extend can0
+    can_id: 0x7DF
+    bit_rate: ${can_bitrate}
+    use_extended_id: ${can_extended_id}
+
+time:
+  - platform: sntp
+    id: time_sntp
+    timezone: Europe/Paris
+
+binary_sensor:
+  # See `mqtt.will_message`
+  - platform: template
+    id: online
+    name: Online
+    icon: mdi:car-connected
+    device_class: connectivity
+    lambda: |
+      return true;
