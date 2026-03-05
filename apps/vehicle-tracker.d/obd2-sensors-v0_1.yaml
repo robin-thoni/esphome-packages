@@ -24,12 +24,6 @@ canbus:
                 float speed = x[3];
                 id(vehicle_speed).publish_state(speed);
               }
-          # - lambda: |
-          #     if (can_id != 0x7D1) {
-          #       return;
-          #     }
-          #     uint32_t odometer = (x[0] << 16) | (x[1] << 8) | x[2];
-          #     id(vehicle_odometer).publish_state(odometer);
 
 sensor:
   - platform: template
@@ -57,23 +51,7 @@ sensor:
       - timeout:
           timeout: 1min
           value: NaN
-      # - lambda: |
-      #     if (x <= 5.0f) {
-      #       return 0.0f;
-      #     } else {
-      #       return x;
-      #     }
       - delta: 5
-  # - platform: template
-  #   id: vehicle_odometer
-  #   name: "Odometer"
-  #   unit_of_measurement: "km"
-  #   accuracy_decimals: 0
-  #   update_interval: never
-  #   filters:
-  #     - timeout:
-  #         timeout: 1min
-  #         value: NaN
 
 interval:
   - interval: 1s
