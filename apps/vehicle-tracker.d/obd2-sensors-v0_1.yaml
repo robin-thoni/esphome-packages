@@ -25,6 +25,13 @@ canbus:
                 id(vehicle_speed).publish_state(speed);
               }
 
+switch:
+  - platform: template
+    id: obd2_enabled
+    name: "OBD2 Enabled"
+    restore_mode: RESTORE_DEFAULT_ON
+    optimistic: true
+
 sensor:
   - platform: template
     id: vehicle_rpm
@@ -56,5 +63,10 @@ sensor:
 interval:
   - interval: 1s
     then:
+      - if:
+          condition:
+            switch.is_on: obd2_enabled
+    then:
       - canbus.send: [0x02, 0x01, 0x0C, 0x00, 0x00, 0x00, 0x00, 0x00] # RPM
+            - delay: 100ms
       - canbus.send: [0x02, 0x01, 0x0D, 0x00, 0x00, 0x00, 0x00, 0x00] # Speed
