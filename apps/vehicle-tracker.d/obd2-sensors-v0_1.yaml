@@ -45,6 +45,9 @@ sensor:
           timeout: 1min
           value: NaN
       - lambda: |
+          if (isnan(x)) {
+            return x;
+          }
           return (int)(x / 100) * 100;
       - delta: 100
   - platform: template
@@ -66,7 +69,7 @@ interval:
       - if:
           condition:
             switch.is_on: obd2_enabled
-    then:
-      - canbus.send: [0x02, 0x01, 0x0C, 0x00, 0x00, 0x00, 0x00, 0x00] # RPM
+          then:
+            - canbus.send: [0x02, 0x01, 0x0C, 0x00, 0x00, 0x00, 0x00, 0x00] # RPM
             - delay: 100ms
-      - canbus.send: [0x02, 0x01, 0x0D, 0x00, 0x00, 0x00, 0x00, 0x00] # Speed
+            - canbus.send: [0x02, 0x01, 0x0D, 0x00, 0x00, 0x00, 0x00, 0x00] # Speed

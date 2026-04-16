@@ -57,6 +57,7 @@ mqtt:
   reboot_timeout: 0s
   log_topic: null
   idf_send_async: true
+  publish_nan_as_none: True
   # Prevent entities from going `Unavailable` when the device is offline.
   # Instead, use a custom binary_sensor
   # TODO: check if it works long time and survives across HA restart
