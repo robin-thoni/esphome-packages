@@ -1,5 +1,6 @@
 esp32:
-  board: esp32-s3-devkitc-1
+  variant: esp32s3
+  flash_size: 16MB
   framework:
     type: esp-idf
     sdkconfig_options:
@@ -14,6 +15,9 @@ esp32:
       CONFIG_ESP_MODEM_CMUX_DEFRAGMENT_PAYLOAD: n
       CONFIG_ESP_MODEM_USE_INFLATABLE_BUFFER_IF_NEEDED: y
       CONFIG_ESP_MODEM_CMUX_USE_SHORT_PAYLOADS_ONLY: n
+
+psram:
+  mode: octal
 
 modem:
   id: atmodem
