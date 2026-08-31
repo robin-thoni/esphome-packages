@@ -15,6 +15,7 @@ button:
     id: btn_do_ota
     name: Firmware OTA
     icon: mdi:download
+    entity_category: "diagnostic"
     on_press: 
       then:
         - script.execute: do_ota
