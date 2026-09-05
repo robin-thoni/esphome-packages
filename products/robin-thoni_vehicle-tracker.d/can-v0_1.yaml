@@ -1,0 +1,5 @@
+canbus:
+  - platform: esp32_can
+    id: can0
+    rx_pin: GPIO16
+    tx_pin: GPIO15

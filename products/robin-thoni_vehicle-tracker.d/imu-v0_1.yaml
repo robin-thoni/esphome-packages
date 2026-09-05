@@ -1,0 +1,4 @@
+sensor:
+  - platform: mpu6050
+    id: imu0
+    address: 0x68

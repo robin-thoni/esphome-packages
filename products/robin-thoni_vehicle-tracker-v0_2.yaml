@@ -1,0 +1,37 @@
+substitutions:
+  modem_enabled: true
+  can_enabled: true
+  buzzer_enabled: true
+  transmitter_enabled: true
+  imu_enabled: true
+
+  can_rt_vehicle_tracker_package: !include robin-thoni_vehicle-tracker.d/can-v0_1.yaml
+
+  buzzer_rt_vehicle_tracker_package: !include robin-thoni_vehicle-tracker.d/buzzer-v0_1.yaml
+
+  transmitter_rt_vehicle_tracker_package: !include robin-thoni_vehicle-tracker.d/transmitter-v0_1.yaml
+  spi1_rt_vehicle_tracker_package:
+    spi:
+      - id: spi_id1
+        clk_pin:  GPIO41
+        mosi_pin: GPIO40
+        miso_pin: GPIO39
+
+  imu_rt_vehicle_tracker_package: !include robin-thoni_vehicle-tracker.d/imu-v0_1.yaml
+  i2c0_rt_vehicle_tracker_package:
+    i2c:
+      - id: i2c0
+        scl: GPIO18
+        sda: GPIO17
+
+packages:
+  - !include
+      file: makerfabs-esp32-s3-4g-lte-cat1-v1_1.yaml
+      vars:
+        modem_enabled: ${modem_enabled}
+  - ${can_rt_vehicle_tracker_package if can_enabled else {}}
+  - ${buzzer_rt_vehicle_tracker_package if buzzer_enabled else {}}
+  - ${spi1_rt_vehicle_tracker_package if transmitter_enabled else {}}
+  - ${transmitter_rt_vehicle_tracker_package if transmitter_enabled else {}}
+  - ${i2c0_rt_vehicle_tracker_package if imu_enabled else {}}
+  - ${imu_rt_vehicle_tracker_package if imu_enabled else {}}
