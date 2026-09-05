@@ -1,0 +1,15 @@
+substitutions:
+  modem_enabled: true
+  modem_package: !include makerfabs-esp32-s3-4g-lte-cat1.d/modem-v0_1.yaml
+
+packages:
+  - ${modem_package if modem_enabled else {}}
+
+esp32:
+  variant: esp32s3
+  flash_size: 16MB
+  framework:
+    type: esp-idf
+
+psram:
+  mode: octal
