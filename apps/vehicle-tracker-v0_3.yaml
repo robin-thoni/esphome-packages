@@ -1,0 +1,102 @@
+substitutions:
+  device_name: null
+
+  mqtt_enabled: true
+  mqtt_broker_url: null
+  mqtt_broker_port: 1883
+  mqtt_broker_username: null
+  mqtt_broker_password: null
+
+  modem_enabled: true
+  modem_apn: internet
+
+  wifi_enabled: false
+
+  can_enabled: true
+  can_bitrate: 500KBPS
+  can_extended_id: false
+
+  ota_url: null
+  ota_md5_url: null
+  ota_username: null
+  ota_password: null
+
+  buzzer_enabled: true
+  transmitter_enabled: true
+  imu_enabled: true
+
+  modem_vehicle_tracker_package: !include vehicle-tracker.d/modem-v0_1.yaml
+
+  wifi_vehicle_tracker_package: !include vehicle-tracker.d/wifi-v0_1.yaml
+  
+  mqtt_vehicle_tracker_package: !include vehicle-tracker.d/mqtt-v0_1.yaml
+
+  gnss_vehicle_tracker_package: !include vehicle-tracker.d/gnss-v0_2.yaml
+  gnss_vehicle_tracker_package2:
+    external_components:
+      - source:
+          type: local
+          path: my_components/esphome-nmea/esphome/components
+        components: [ gps, nmea ]
+      # - source: github://esphome/esphome#dev
+      #   components: [ gps ]
+      #   refresh: 10min
+
+  can_vehicle_tracker_package:
+    external_components:
+      - source: github://robin-thoni/esphome-components
+        components: [ canbus_isotp, obd2, obd2_client ]
+        refresh: 10min
+
+    canbus:
+      - id: !extend can0
+        can_id: 0x7DF
+        bit_rate: ${can_bitrate}
+        rx_queue_len: 64
+        use_extended_id: ${can_extended_id}
+
+  obd2_vehicle_tracker_package: !include vehicle-tracker.d/obd2-sensors-v0_2.yaml
+
+  buzzer_vehicle_tracker_package: !include vehicle-tracker.d/buzzer-v0_1.yaml
+
+  transmitter_vehicle_tracker_package: !include vehicle-tracker.d/transmitter-v0_1.yaml
+
+  imu_vehicle_tracker_package: !include vehicle-tracker.d/imu-v0_1.yaml
+
+packages:
+  - !include
+      file: ../products/robin-thoni_vehicle-tracker-v0_2.yaml
+      vars:
+        modem_enabled: ${modem_enabled}
+        can_enabled: ${can_enabled}
+        buzzer_enabled: ${buzzer_enabled}
+        transmitter_enabled: ${transmitter_enabled}
+        imu_enabled: ${imu_enabled}
+  - ${gnss_vehicle_tracker_package if modem_enabled else {}}
+  - ${gnss_vehicle_tracker_package2 if modem_enabled else {}}
+  - !include
+      file: vehicle-tracker.d/ota-v0_1.yaml
+      vars:
+        ota_url: ${ota_url}
+        ota_md5_url: ${ota_md5_url}
+        ota_username: ${ota_username}
+        ota_password: ${ota_password}
+  - ${can_vehicle_tracker_package if can_enabled else {}}
+  - ${obd2_vehicle_tracker_package if can_enabled else {}}
+  - ${modem_vehicle_tracker_package if modem_enabled else {}}
+  - ${wifi_vehicle_tracker_package if wifi_enabled else {}}
+  - ${mqtt_vehicle_tracker_package if mqtt_enabled else {}}
+  - ${buzzer_vehicle_tracker_package if buzzer_enabled else {}}
+  - ${transmitter_vehicle_tracker_package if transmitter_enabled else {}}
+  - ${imu_vehicle_tracker_package if imu_enabled else {}}
+  - !include vehicle-tracker.d/time-v0_1.yaml # TODO only if wifi_enabled or modem_enabled
+  - !include vehicle-tracker.d/misc-v0_2.yaml
+
+esphome:
+  name: ${device_name}
+  friendly_name: ${device_name}
+  project:
+    name: robin_thoni.vehicle_tracker
+    version: "0.3.0-dev"
+
+logger:

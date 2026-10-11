@@ -1,0 +1,101 @@
+modem:
+  nmea:
+    id: gnss_uart
+    update_interval: 15s
+
+gps:
+  uart_id: gnss_uart
+  latitude:
+    id: gnss_latitude
+    accuracy_decimals: 8
+    filters:
+      - timeout:
+          timeout: 1min
+          value: NaN
+      - delta: 0.0003
+  longitude:
+    id: gnss_longitude
+    accuracy_decimals: 8
+    filters:
+      - timeout:
+          timeout: 1min
+          value: NaN
+      - delta: 0.0003
+  speed:
+    id: gnss_speed
+    accuracy_decimals: 0
+    filters:
+      - timeout:
+          timeout: 1min
+          value: NaN
+      - lambda: |
+          if (x <= 5.0f) {
+            return 0.0f;
+          } else {
+            return x;
+          }
+      - delta: 1
+  course:
+    id: gnss_course
+    accuracy_decimals: 0
+    filters:
+      - timeout:
+          timeout: 1min
+          value: NaN
+      - delta: 10
+  altitude:
+    id: gnss_altitude
+    accuracy_decimals: 0
+    filters:
+      - timeout:
+          timeout: 1min
+          value: NaN
+      - delta: 3
+    on_value: 
+      then:
+        - component.update: gnss_data
+  update_interval: 15s
+
+text_sensor:
+  - platform: template
+    id: gnss_data
+    name: Location Data
+    icon: mdi:map
+    entity_category: "diagnostic"
+    update_interval: never
+    lambda: |
+      if (isnan(id(gnss_latitude).state) || isnan(id(gnss_longitude).state)) {
+        return std::string();
+      }
+      const auto& lat_lon = std::to_string(id(gnss_latitude).state) + ";" + std::to_string(id(gnss_longitude).state) + ";";
+      if (id(gnss_data).state.rfind(lat_lon, 0) == 0) {
+        return {};
+      }
+      return lat_lon + std::to_string((int)id(gnss_altitude).state) + ";" + std::to_string((int)id(gnss_speed).state) + ";" + std::to_string((int)id(gnss_course).state) + ";";
+
+sensor:
+  - platform: template
+    id: gnsss_ttff
+    name: GNSS - Time to First Fix
+    icon: mdi:network
+    device_class: duration
+    unit_of_measurement: s
+    update_interval: 1s
+    entity_category: diagnostic
+    lambda: |
+      if (id(gnsss_ttff)->state > 0) {
+        return {};
+      }
+      if (id(gnss_data)->state != "") {
+        const uint64_t uptime = millis_64();
+        const uint64_t seconds_int = uptime / 1000ULL;
+        const float seconds = float(seconds_int) + (uptime % 1000ULL) / 1000.0f;
+        return seconds;
+      }
+      return {};
+
+switch:
+  - platform: modem
+    gnss:
+      id: gnss_on_off
+      restore_mode: ALWAYS_ON

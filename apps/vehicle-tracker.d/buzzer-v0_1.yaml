@@ -1,0 +1,4 @@
+rtttl:
+  output: buzzer_output
+  id: buzzer
+  gain: 60%

@@ -1,0 +1,71 @@
+esphome:
+  on_shutdown:
+    then:
+      - mqtt.publish:
+          topic: ${device_name}/binary_sensor/online/state
+          payload: "OFF"
+      # - lambda: !lambda
+      #     id(online).disable_loop();
+      #     id(online).publish_state(false);
+      # - mqtt.disable:
+      - delay: 1s
+      - logger.log: "Shutdown complete, device is offline."
+
+mqtt:
+  id: mqtt_id
+
+  broker: ${mqtt_broker_url}
+  port: ${mqtt_broker_port}
+  username: ${mqtt_broker_username}
+  password: ${mqtt_broker_password}
+
+  reboot_timeout: 0s
+  log_topic: null
+  idf_send_async: true
+  # Prevent entities from going `Unavailable` when the device is offline.
+  # Instead, use a custom binary_sensor
+  # TODO: check if it works long time and survives across HA restart
+  will_message:
+    topic: ${device_name}/binary_sensor/online/state
+    payload: "OFF"
+
+  discovery_unique_id_generator: mac
+  discovery_object_id_generator: device_name
+
+binary_sensor:
+  # See `mqtt.will_message`
+  - platform: template
+    id: online
+    name: Online
+    icon: mdi:car-connected
+    device_class: connectivity
+    lambda: |
+      return true;
+
+sensor:
+  - platform: template
+    id: mqtt_ttfc
+    name: MQTT - Time to First Connection
+    icon: mdi:network
+    device_class: duration
+    unit_of_measurement: s
+    update_interval: 1s
+    entity_category: diagnostic
+    lambda: |
+      if (id(mqtt_ttfc)->state > 0) {
+        return {};
+      }
+      if (id(mqtt_id)->is_connected()) {
+        const uint64_t uptime = millis_64();
+        const uint64_t seconds_int = uptime / 1000ULL;
+        const float seconds = float(seconds_int) + (uptime % 1000ULL) / 1000.0f;
+        return seconds;
+      }
+      return {};
+
+script:
+  # Connect to MQTT broker faster as soon as Network is connected
+  - id: !extend script_on_connect
+    then:
+      - mqtt.disable:
+      - mqtt.enable:

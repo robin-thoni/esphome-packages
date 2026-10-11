@@ -1,0 +1,11 @@
+sensor:
+  - platform: mpu6050
+    id: !extend imu0
+    gyro_x:
+      name: "Gyro X"
+    gyro_y:
+      name: "Gyro Y"
+    gyro_z:
+      name: "Gyro Z"
+
+    update_interval: 1s

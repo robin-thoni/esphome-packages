@@ -1,0 +1,29 @@
+wifi:
+  id: wifi_id
+  on_connect:
+    then:
+      - script.execute: script_on_connect_raw
+  on_disconnect:
+    then:
+      - script.execute: script_on_disconnect_raw
+
+sensor:
+  - platform: template
+    id: wifi_ttfc
+    name: WiFi - Time to First Connection
+    icon: mdi:wifi-arrow-up-down
+    device_class: duration
+    unit_of_measurement: s
+    update_interval: 1s
+    entity_category: diagnostic
+    lambda: |
+      if (id(wifi_ttfc)->state > 0) {
+        return {};
+      }
+      if (id(wifi_id)->is_connected()) {
+        const uint64_t uptime = millis_64();
+        const uint64_t seconds_int = uptime / 1000ULL;
+        const float seconds = float(seconds_int) + (uptime % 1000ULL) / 1000.0f;
+        return seconds;
+      }
+      return {};

@@ -1,0 +1,80 @@
+text_sensor:
+  - platform: template
+    id: public_ip
+    name: "Network - Public IP"
+    icon: mdi:ip-network
+    entity_category: diagnostic
+
+sensor:
+  - platform: template
+    id: network_ttfc
+    name: Network - Time to First Connection
+    icon: mdi:network
+    device_class: duration
+    unit_of_measurement: s
+    update_interval: 1s
+    entity_category: diagnostic
+    lambda: |
+      if (id(network_ttfc)->state > 0) {
+        return {};
+      }
+      if (network::is_connected()) {
+        const uint64_t uptime = millis_64();
+        const uint64_t seconds_int = uptime / 1000ULL;
+        const float seconds = float(seconds_int) + (uptime % 1000ULL) / 1000.0f;
+        return seconds;
+      }
+      return {};
+
+button:
+  - platform: shutdown
+    id: shutdown_btn
+  - platform: restart
+    id: restart_btn
+
+script:
+  - id: script_update_public_ip
+    then:
+      - http_request.get:
+          url: https://ifconfig.co/json
+          capture_response: true
+          on_response:
+            then:
+              - logger.log:
+                  format: "IP details: %s"
+                  args:
+                    - body.c_str()
+              - if:
+                  condition:
+                      lambda: return response->status_code == 200;
+                  then:
+                      - lambda: |-
+                          json::parse_json(body, [](JsonObject root) -> bool {
+                              if (root["ip"]) {
+                                  id(public_ip).publish_state(root["ip"].as<const char*>());
+                                  return true;
+                              }
+                              else {
+                                id(public_ip).publish_state("unknown");
+                                return false;
+                              }
+                          });
+          on_error:
+            then:
+              - lambda: |
+                  id(public_ip).publish_state("none");
+
+  - id: script_on_connect_raw
+    then:
+      - script.execute: script_on_connect
+  - id: script_on_disconnect_raw
+    then:
+      - script.execute: script_on_disconnect
+
+  - id: script_on_connect
+    then:
+      - script.execute: script_update_public_ip
+
+  - id: script_on_disconnect
+    then:
+      - script.execute: script_update_public_ip

@@ -1,0 +1,10 @@
+time:
+  - platform: sntp
+    id: time_sntp
+    timezone: Europe/Paris
+
+script:
+  # Force SNTP update as soon as Network is connected
+  - id: !extend script_on_connect
+    then:
+      - component.update: time_sntp

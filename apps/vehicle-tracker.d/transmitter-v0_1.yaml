@@ -1,0 +1,4 @@
+cc1101:
+  frequency: 433.92MHz
+  modulation_type: ASK/OOK
+  filter_bandwidth: 650kHz

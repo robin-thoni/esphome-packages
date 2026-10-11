@@ -1,0 +1,43 @@
+external_components:
+  # - source: github://pr#6721
+  #   components: [ network, modem ]  # also add 'watchdog' if not found
+  #   refresh: 10min
+  - source:
+      type: local
+      path: my_components/esphome-modem/esphome/components
+    components:
+      - network
+      - modem
+
+modem:
+  id: modem_id
+  apn: ${modem_apn}
+  # pin_code: "0000"
+  reboot_timeout: 0s
+  on_connect:
+    then:
+      - script.execute: script_on_connect_raw
+  on_disconnect:
+    then:
+      - script.execute: script_on_disconnect_raw
+
+sensor:
+  - platform: template
+    id: modem_ttfc
+    name: Modem - Time to First Connection
+    icon: mdi:signal
+    device_class: duration
+    unit_of_measurement: s
+    update_interval: 1s
+    entity_category: diagnostic
+    lambda: |
+      if (id(modem_ttfc)->state > 0) {
+        return {};
+      }
+      if (id(modem_id)->is_connected()) {
+        const uint64_t uptime = millis_64();
+        const uint64_t seconds_int = uptime / 1000ULL;
+        const float seconds = float(seconds_int) + (uptime % 1000ULL) / 1000.0f;
+        return seconds;
+      }
+      return {};
