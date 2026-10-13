@@ -16,8 +16,7 @@ substitutions:
   can_bitrate: 500KBPS
   can_extended_id: false
 
-  ota_url: null
-  ota_md5_url: null
+  ota_manifest_url: null
   ota_username: null
   ota_password: null
 
@@ -76,10 +75,9 @@ packages:
   - ${gnss_vehicle_tracker_package if modem_enabled else {}}
   - ${gnss_vehicle_tracker_package2 if modem_enabled else {}}
   - !include
-      file: vehicle-tracker.d/ota-v0_1.yaml
+      file: vehicle-tracker.d/ota-v0_2.yaml
       vars:
-        ota_url: ${ota_url}
-        ota_md5_url: ${ota_md5_url}
+        ota_manifest_url: ${ota_manifest_url}
         ota_username: ${ota_username}
         ota_password: ${ota_password}
   - ${can_vehicle_tracker_package if can_enabled else {}}

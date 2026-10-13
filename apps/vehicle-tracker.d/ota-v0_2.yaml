@@ -1,0 +1,15 @@
+substitutions:
+  ota_manifest_url: null
+  ota_username: null
+  ota_password: null
+
+http_request:
+  verify_ssl: True
+
+ota:
+  - platform: http_request
+
+update:
+  - platform: http_request
+    name: Firmware Update
+    source: ${ota_manifest_url}
