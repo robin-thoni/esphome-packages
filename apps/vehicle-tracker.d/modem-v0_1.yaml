@@ -4,9 +4,8 @@ external_components:
   #   refresh: 10min
   - source:
       type: local
-      path: my_components/esphome-modem/esphome/components
+      path: my_components/robin-thoni-esphome-components/components-modem
     components:
-      - network
       - modem
 
 modem:

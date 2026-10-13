@@ -36,7 +36,7 @@ substitutions:
     external_components:
       - source:
           type: local
-          path: my_components/esphome-nmea/esphome/components
+          path: my_components/robin-thoni-esphome-components/components-nmea
         components: [ gps, nmea ]
       # - source: github://esphome/esphome#dev
       #   components: [ gps ]
@@ -44,9 +44,10 @@ substitutions:
 
   can_vehicle_tracker_package:
     external_components:
-      - source: github://robin-thoni/esphome-components
+      - source:
+          type: local
+          path: my_components/robin-thoni-esphome-components/components
         components: [ canbus_isotp, obd2, obd2_client ]
-        refresh: 10min
 
     canbus:
       - id: !extend can0
