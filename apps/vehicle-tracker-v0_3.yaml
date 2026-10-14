@@ -1,5 +1,6 @@
 substitutions:
   device_name: null
+  device_subversion: '0'
 
   mqtt_enabled: true
   mqtt_broker_url: null
@@ -98,6 +99,6 @@ esphome:
   friendly_name: ${device_name}
   project:
     name: robin_thoni.vehicle_tracker
-    version: "0.3.0-dev"
+    version: "0.3.0-dev-${device_subversion}"
 
 logger:
