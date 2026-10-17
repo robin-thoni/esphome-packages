@@ -69,6 +69,7 @@ sensor:
     name: "Speed"
     icon: mdi:speedometer
     unit_of_measurement: "km/h"
+    device_class: speed
     accuracy_decimals: 0
     update_interval: 1s
     type: pid
