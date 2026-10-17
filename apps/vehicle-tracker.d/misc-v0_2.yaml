@@ -49,9 +49,13 @@ sensor:
 
 button:
   - platform: shutdown
-    id: shutdown_btn
+    id: system_shutdown
+    name: "System - Shutdown"
+    entity_category: diagnostic
   - platform: restart
-    id: restart_btn
+    id: system_restart
+    name: "System - Restart"
+    entity_category: diagnostic
 
 script:
   - id: script_update_public_ip
