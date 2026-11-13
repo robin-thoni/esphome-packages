@@ -1,0 +1,10 @@
+substitutions:
+  input_id: null
+  inputs_enabled: true
+
+packages:
+  - !include
+      file: input-v0_1.yaml
+      vars:
+        input_id: ${input_id}
+      condition: ${inputs_enabled == True or input_id in (inputs_enabled or [])}

@@ -1,0 +1,7 @@
+light:
+  - platform: esp32_rmt_led_strip
+    id: rgb_led
+    channel_colors: RGB
+    chipset: WS2812
+    pin: GPIO38
+    num_leds: 1

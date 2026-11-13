@@ -1,0 +1,5 @@
+time:
+  - platform: pcf85063
+    id: pcf85063_time
+    i2c_id: i2c0
+    address: 0x51

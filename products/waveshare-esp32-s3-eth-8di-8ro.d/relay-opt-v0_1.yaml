@@ -1,0 +1,10 @@
+substitutions:
+  relay_id: null
+  relays_enabled: true
+
+packages:
+  - !include
+      file: relay-v0_1.yaml
+      vars:
+        relay_id: ${relay_id}
+      condition: ${relays_enabled == True or relay_id in (relays_enabled or [])}

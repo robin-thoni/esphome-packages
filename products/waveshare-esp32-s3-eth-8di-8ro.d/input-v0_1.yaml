@@ -1,0 +1,10 @@
+substitutions:
+  input_id: null
+
+binary_sensor:
+  - platform: gpio
+    id: input_${input_id}
+    pin:
+      number: GPIO${input_id + 3}
+      mode: INPUT_PULLUP
+      inverted: true

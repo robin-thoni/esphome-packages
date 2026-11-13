@@ -1,0 +1,147 @@
+substitutions:
+  ethernet_enabled: true
+  can_enabled: true
+  rtc_enabled: true
+  buzzer_enabled: true
+  led_enabled: true
+  relays_enabled: true
+  inputs_enabled: true
+
+packages:
+  - !include
+      file: waveshare-esp32-s3-eth-8di-8ro.d/ethernet-v0_1.yaml
+      condition: ${ethernet_enabled}
+  - !include
+      file: waveshare-esp32-s3-eth-8di-8ro.d/can-v0_1.yaml
+      condition: ${can_enabled}
+  - !include
+      file: waveshare-esp32-s3-eth-8di-8ro.d/rtc-v0_1.yaml
+      condition: ${rtc_enabled}
+  - !include
+      file: waveshare-esp32-s3-eth-8di-8ro.d/buzzer-v0_1.yaml
+      condition: ${buzzer_enabled}
+  - !include
+      file: waveshare-esp32-s3-eth-8di-8ro.d/led-v0_1.yaml
+      condition: ${led_enabled}
+
+  - !include
+      file: waveshare-esp32-s3-eth-8di-8ro.d/relay-opt-v0_1.yaml
+      vars:
+        relay_id: 1
+        relays_enabled: ${relays_enabled}
+  - !include
+      file: waveshare-esp32-s3-eth-8di-8ro.d/relay-opt-v0_1.yaml
+      vars:
+        relay_id: 2
+        relays_enabled: ${relays_enabled}
+  - !include
+      file: waveshare-esp32-s3-eth-8di-8ro.d/relay-opt-v0_1.yaml
+      vars:
+        relay_id: 3
+        relays_enabled: ${relays_enabled}
+  - !include
+      file: waveshare-esp32-s3-eth-8di-8ro.d/relay-opt-v0_1.yaml
+      vars:
+        relay_id: 4
+        relays_enabled: ${relays_enabled}
+  - !include
+      file: waveshare-esp32-s3-eth-8di-8ro.d/relay-opt-v0_1.yaml
+      vars:
+        relay_id: 5
+        relays_enabled: ${relays_enabled}
+  - !include
+      file: waveshare-esp32-s3-eth-8di-8ro.d/relay-opt-v0_1.yaml
+      vars:
+        relay_id: 6
+        relays_enabled: ${relays_enabled}
+  - !include
+      file: waveshare-esp32-s3-eth-8di-8ro.d/relay-opt-v0_1.yaml
+      vars:
+        relay_id: 7
+        relays_enabled: ${relays_enabled}
+  - !include
+      file: waveshare-esp32-s3-eth-8di-8ro.d/relay-opt-v0_1.yaml
+      vars:
+        relay_id: 8
+        relays_enabled: ${relays_enabled}
+
+  - !include
+      file: waveshare-esp32-s3-eth-8di-8ro.d/input-opt-v0_1.yaml
+      vars:
+        input_id: 1
+        inputs_enabled: ${inputs_enabled}
+  - !include
+      file: waveshare-esp32-s3-eth-8di-8ro.d/input-opt-v0_1.yaml
+      vars:
+        input_id: 2
+        inputs_enabled: ${inputs_enabled}
+  - !include
+      file: waveshare-esp32-s3-eth-8di-8ro.d/input-opt-v0_1.yaml
+      vars:
+        input_id: 3
+        inputs_enabled: ${inputs_enabled}
+  - !include
+      file: waveshare-esp32-s3-eth-8di-8ro.d/input-opt-v0_1.yaml
+      vars:
+        input_id: 4
+        inputs_enabled: ${inputs_enabled}
+  - !include
+      file: waveshare-esp32-s3-eth-8di-8ro.d/input-opt-v0_1.yaml
+      vars:
+        input_id: 5
+        inputs_enabled: ${inputs_enabled}
+  - !include
+      file: waveshare-esp32-s3-eth-8di-8ro.d/input-opt-v0_1.yaml
+      vars:
+        input_id: 6
+        inputs_enabled: ${inputs_enabled}
+  - !include
+      file: waveshare-esp32-s3-eth-8di-8ro.d/input-opt-v0_1.yaml
+      vars:
+        input_id: 7
+        inputs_enabled: ${inputs_enabled}
+  - !include
+      file: waveshare-esp32-s3-eth-8di-8ro.d/input-opt-v0_1.yaml
+      vars:
+        input_id: 8
+        inputs_enabled: ${inputs_enabled}
+
+psram:
+  mode: octal
+  speed: 80MHz
+
+i2c:
+  - id: i2c0
+    sda: GPIO42
+    scl: GPIO41
+    frequency: 100kHz
+
+pca9554:
+  - id: 'TCA9554_hub'
+    i2c_id: i2c0
+    address: 0x20
+
+# output:
+#   - platform: ledc
+#     id: buzzer
+#     pin:
+#       number: GPIO46
+#       ignore_strapping_warning: true
+
+# light:
+#   - platform: esp32_rmt_led_strip
+#     id: rgb_led
+#     channel_colors: RGB
+#     chipset: WS2812
+#     pin: GPIO38
+#     num_leds: 1
+
+binary_sensor:
+  - platform: gpio
+    id: button_boot
+    pin:
+      number: 0
+      ignore_strapping_warning: true
+      mode:
+        input: true
+      inverted: true

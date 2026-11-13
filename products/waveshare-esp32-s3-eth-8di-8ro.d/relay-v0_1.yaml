@@ -1,0 +1,12 @@
+substitutions:
+  relay_id: null
+
+output:
+  - platform: gpio
+    id: relay_${relay_id}
+    pin:
+      pca9554: TCA9554_hub
+      number: ${relay_id - 1}
+      mode:
+        output: true
+      inverted: false

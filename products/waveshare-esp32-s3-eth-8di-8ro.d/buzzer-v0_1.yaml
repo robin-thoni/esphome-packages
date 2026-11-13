@@ -1,0 +1,6 @@
+output:
+  - platform: ledc
+    id: buzzer
+    pin:
+      number: GPIO46
+      ignore_strapping_warning: true
