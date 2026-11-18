@@ -1,14 +1,7 @@
-globals:
-  - id: g_system_boot_count
-    type: uint32_t
-    restore_value: yes
-    initial_value: '0'
-
 esphome:
   on_boot:
     then:
-      - lambda: |-
-          id(g_system_boot_count)++;
+      - counter.increment: system_boot_count
 
 text_sensor:
   - platform: template
@@ -38,14 +31,13 @@ sensor:
       }
       return {};
 
-  - platform: template
+  - platform: counter
     id: system_boot_count
     name: "System - Boot Count"
     icon: mdi:counter
     entity_category: diagnostic
+    state_class: total_increasing
     accuracy_decimals: 0
-    lambda: |-
-      return id(g_system_boot_count);
 
 button:
   - platform: shutdown
