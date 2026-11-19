@@ -1,4 +1,5 @@
 substitutions:
+  board: null
   ethernet_enabled: true
   can_enabled: true
   rtc_enabled: true
@@ -9,99 +10,107 @@ substitutions:
 
 packages:
   - !include
-      file: waveshare-esp32-s3-eth-8di-8ro.d/ethernet-v0_1.yaml
+      file: waveshare-esp32-s3-eth-8di-8xo.d/ethernet-v0_1.yaml
       condition: ${ethernet_enabled}
   - !include
-      file: waveshare-esp32-s3-eth-8di-8ro.d/can-v0_1.yaml
+      file: waveshare-esp32-s3-eth-8di-8xo.d/can-v0_1.yaml
       condition: ${can_enabled}
   - !include
-      file: waveshare-esp32-s3-eth-8di-8ro.d/rtc-v0_1.yaml
+      file: waveshare-esp32-s3-eth-8di-8xo.d/rtc-v0_1.yaml
       condition: ${rtc_enabled}
   - !include
-      file: waveshare-esp32-s3-eth-8di-8ro.d/buzzer-v0_1.yaml
+      file: waveshare-esp32-s3-eth-8di-8xo.d/buzzer-v0_1.yaml
       condition: ${buzzer_enabled}
   - !include
-      file: waveshare-esp32-s3-eth-8di-8ro.d/led-v0_1.yaml
+      file: waveshare-esp32-s3-eth-8di-8xo.d/led-v0_1.yaml
       condition: ${led_enabled}
 
   - !include
-      file: waveshare-esp32-s3-eth-8di-8ro.d/relay-opt-v0_1.yaml
+      file: waveshare-esp32-s3-eth-8di-8xo.d/relay-opt-v0_1.yaml
       vars:
         relay_id: 1
+        inverted: ${board == "digital" }
         relays_enabled: ${relays_enabled}
   - !include
-      file: waveshare-esp32-s3-eth-8di-8ro.d/relay-opt-v0_1.yaml
+      file: waveshare-esp32-s3-eth-8di-8xo.d/relay-opt-v0_1.yaml
       vars:
         relay_id: 2
+        inverted: ${board == "digital" }
         relays_enabled: ${relays_enabled}
   - !include
-      file: waveshare-esp32-s3-eth-8di-8ro.d/relay-opt-v0_1.yaml
+      file: waveshare-esp32-s3-eth-8di-8xo.d/relay-opt-v0_1.yaml
       vars:
         relay_id: 3
+        inverted: ${board == "digital" }
         relays_enabled: ${relays_enabled}
   - !include
-      file: waveshare-esp32-s3-eth-8di-8ro.d/relay-opt-v0_1.yaml
+      file: waveshare-esp32-s3-eth-8di-8xo.d/relay-opt-v0_1.yaml
       vars:
         relay_id: 4
+        inverted: ${board == "digital" }
         relays_enabled: ${relays_enabled}
   - !include
-      file: waveshare-esp32-s3-eth-8di-8ro.d/relay-opt-v0_1.yaml
+      file: waveshare-esp32-s3-eth-8di-8xo.d/relay-opt-v0_1.yaml
       vars:
         relay_id: 5
+        inverted: ${board == "digital" }
         relays_enabled: ${relays_enabled}
   - !include
-      file: waveshare-esp32-s3-eth-8di-8ro.d/relay-opt-v0_1.yaml
+      file: waveshare-esp32-s3-eth-8di-8xo.d/relay-opt-v0_1.yaml
       vars:
         relay_id: 6
+        inverted: ${board == "digital" }
         relays_enabled: ${relays_enabled}
   - !include
-      file: waveshare-esp32-s3-eth-8di-8ro.d/relay-opt-v0_1.yaml
+      file: waveshare-esp32-s3-eth-8di-8xo.d/relay-opt-v0_1.yaml
       vars:
         relay_id: 7
+        inverted: ${board == "digital" }
         relays_enabled: ${relays_enabled}
   - !include
-      file: waveshare-esp32-s3-eth-8di-8ro.d/relay-opt-v0_1.yaml
+      file: waveshare-esp32-s3-eth-8di-8xo.d/relay-opt-v0_1.yaml
       vars:
         relay_id: 8
+        inverted: ${board == "digital" }
         relays_enabled: ${relays_enabled}
 
   - !include
-      file: waveshare-esp32-s3-eth-8di-8ro.d/input-opt-v0_1.yaml
+      file: waveshare-esp32-s3-eth-8di-8xo.d/input-opt-v0_1.yaml
       vars:
         input_id: 1
         inputs_enabled: ${inputs_enabled}
   - !include
-      file: waveshare-esp32-s3-eth-8di-8ro.d/input-opt-v0_1.yaml
+      file: waveshare-esp32-s3-eth-8di-8xo.d/input-opt-v0_1.yaml
       vars:
         input_id: 2
         inputs_enabled: ${inputs_enabled}
   - !include
-      file: waveshare-esp32-s3-eth-8di-8ro.d/input-opt-v0_1.yaml
+      file: waveshare-esp32-s3-eth-8di-8xo.d/input-opt-v0_1.yaml
       vars:
         input_id: 3
         inputs_enabled: ${inputs_enabled}
   - !include
-      file: waveshare-esp32-s3-eth-8di-8ro.d/input-opt-v0_1.yaml
+      file: waveshare-esp32-s3-eth-8di-8xo.d/input-opt-v0_1.yaml
       vars:
         input_id: 4
         inputs_enabled: ${inputs_enabled}
   - !include
-      file: waveshare-esp32-s3-eth-8di-8ro.d/input-opt-v0_1.yaml
+      file: waveshare-esp32-s3-eth-8di-8xo.d/input-opt-v0_1.yaml
       vars:
         input_id: 5
         inputs_enabled: ${inputs_enabled}
   - !include
-      file: waveshare-esp32-s3-eth-8di-8ro.d/input-opt-v0_1.yaml
+      file: waveshare-esp32-s3-eth-8di-8xo.d/input-opt-v0_1.yaml
       vars:
         input_id: 6
         inputs_enabled: ${inputs_enabled}
   - !include
-      file: waveshare-esp32-s3-eth-8di-8ro.d/input-opt-v0_1.yaml
+      file: waveshare-esp32-s3-eth-8di-8xo.d/input-opt-v0_1.yaml
       vars:
         input_id: 7
         inputs_enabled: ${inputs_enabled}
   - !include
-      file: waveshare-esp32-s3-eth-8di-8ro.d/input-opt-v0_1.yaml
+      file: waveshare-esp32-s3-eth-8di-8xo.d/input-opt-v0_1.yaml
       vars:
         input_id: 8
         inputs_enabled: ${inputs_enabled}

@@ -1,5 +1,6 @@
 substitutions:
   relay_id: null
+  inverted: null
   relays_enabled: true
 
 packages:
@@ -7,4 +8,5 @@ packages:
       file: relay-v0_1.yaml
       vars:
         relay_id: ${relay_id}
+        inverted: ${inverted}
       condition: ${relays_enabled == True or relay_id in (relays_enabled or [])}
